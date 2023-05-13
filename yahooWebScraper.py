@@ -16,33 +16,33 @@ client = gspread.authorize(creds)
 sheet = client.open("Amateur Investor Chronicles").worksheet('Intrinsic value calculation')
 
 # Extract ticker from a cell in google sheets and print its value
-ticker = sheet.acell('C2').value
+ticker = sheet.acell('B2').value
 print('Found ticker symbol: ' + ticker)
 
 # Dictionary of xPaths
 xpath_dict = {
 "summary" : {
-"price": '//*[@id="quote-header-info"]/div[3]/div[1]/div/fin-streamer[1]',
-"market cap": '//*[@id="quote-summary"]/div[2]/table/tbody/tr[1]/td[2]',
-"beta": '//*[@id="quote-summary"]/div[2]/table/tbody/tr[2]/td[2]',
-"P/E ratio": '//*[@id="quote-summary"]/div[2]/table/tbody/tr[3]/td[2]',
-"EPS": '//*[@id="quote-summary"]/div[2]/table/tbody/tr[4]/td[2]'
+    "Price": '//*[@id="quote-header-info"]/div[3]/div[1]/div/fin-streamer[1]',
+    "Market cap": '//*[@id="quote-summary"]/div[2]/table/tbody/tr[1]/td[2]',
+    "Beta": '//*[@id="quote-summary"]/div[2]/table/tbody/tr[2]/td[2]',
+    "P/E ratio": '//*[@id="quote-summary"]/div[2]/table/tbody/tr[3]/td[2]',
+    "Earnings per share": '//*[@id="quote-summary"]/div[2]/table/tbody/tr[4]/td[2]'
 	}
 ,
 "key-statistics" : {
-"enterprise value": '//*[@id="Col1-0-KeyStatistics-Proxy"]/section/div[2]/div[1]/div/div/div/div/table/tbody/tr[2]/td[2]',
-"trailing P/E": '//*[@id="Col1-0-KeyStatistics-Proxy"]/section/div[2]/div[1]/div/div/div/div/table/tbody/tr[3]/td[2]',
-"forward P/E": '//*[@id="Col1-0-KeyStatistics-Proxy"]/section/div[2]/div[1]/div/div/div/div/table/tbody/tr[4]/td[2]',
-"PEG": '//*[@id="Col1-0-KeyStatistics-Proxy"]/section/div[2]/div[1]/div/div/div/div/table/tbody/tr[5]/td[2]',
-"price/sales": '//*[@id="Col1-0-KeyStatistics-Proxy"]/section/div[2]/div[1]/div/div/div/div/table/tbody/tr[6]/td[2]',
-"price/book": '//*[@id="Col1-0-KeyStatistics-Proxy"]/section/div[2]/div[1]/div/div/div/div/table/tbody/tr[7]/td[2]',
-"diluted EPS (ttm)": '//*[@id="Col1-0-KeyStatistics-Proxy"]/section/div[2]/div[3]/div/div[4]/div/div/table/tbody/tr[7]/td[2]',
-"Book value per share (mrq)": '//*[@id="Col1-0-KeyStatistics-Proxy"]/section/div[2]/div[3]/div/div[5]/div/div/table/tbody/tr[6]/td[2]',
-"cash&cash equivalents" : '//*[@id="Col1-0-KeyStatistics-Proxy"]/section/div[2]/div[3]/div/div[5]/div/div/table/tbody/tr[1]/td[2]',
-"total debt" : '//*[@id="Col1-0-KeyStatistics-Proxy"]/section/div[2]/div[3]/div/div[5]/div/div/table/tbody/tr[3]/td[2]',
-"operating cash flow (ttm)": '//*[@id="Col1-0-KeyStatistics-Proxy"]/section/div[2]/div[3]/div/div[6]/div/div/table/tbody/tr[1]/td[2]',
-"free cash flow (ttm)": '//*[@id="Col1-0-KeyStatistics-Proxy"]/section/div[2]/div[3]/div/div[6]/div/div/table/tbody/tr[2]/td[2]',
-"shares outstanding": '//*[@id="Col1-0-KeyStatistics-Proxy"]/section/div[2]/div[2]/div/div[2]/div/div/table/tbody/tr[3]/td[2]'
+	"Enterprise value": '//*[@id="Col1-0-KeyStatistics-Proxy"]/section/div[2]/div[1]/div/div/div/div/table/tbody/tr[2]/td[2]',
+    "Trailing P/E": '//*[@id="Col1-0-KeyStatistics-Proxy"]/section/div[2]/div[1]/div/div/div/div/table/tbody/tr[3]/td[2]',
+    "Forward P/E": '//*[@id="Col1-0-KeyStatistics-Proxy"]/section/div[2]/div[1]/div/div/div/div/table/tbody/tr[4]/td[2]',
+    "PEG": '//*[@id="Col1-0-KeyStatistics-Proxy"]/section/div[2]/div[1]/div/div/div/div/table/tbody/tr[5]/td[2]',
+    "Price/sales": '//*[@id="Col1-0-KeyStatistics-Proxy"]/section/div[2]/div[1]/div/div/div/div/table/tbody/tr[6]/td[2]',
+    "Price/book": '//*[@id="Col1-0-KeyStatistics-Proxy"]/section/div[2]/div[1]/div/div/div/div/table/tbody/tr[7]/td[2]',
+    "Diluted EPS (ttm)": '//*[@id="Col1-0-KeyStatistics-Proxy"]/section/div[2]/div[3]/div/div[4]/div/div/table/tbody/tr[7]/td[2]',
+    "Book value per share (mrq)": '//*[@id="Col1-0-KeyStatistics-Proxy"]/section/div[2]/div[3]/div/div[5]/div/div/table/tbody/tr[6]/td[2]',
+    "Cash&cash equivalents" : '//*[@id="Col1-0-KeyStatistics-Proxy"]/section/div[2]/div[3]/div/div[5]/div/div/table/tbody/tr[1]/td[2]',
+    "Total debt" : '//*[@id="Col1-0-KeyStatistics-Proxy"]/section/div[2]/div[3]/div/div[5]/div/div/table/tbody/tr[3]/td[2]',
+    "Operating cash flow (ttm)": '//*[@id="Col1-0-KeyStatistics-Proxy"]/section/div[2]/div[3]/div/div[6]/div/div/table/tbody/tr[1]/td[2]',
+    "Free cash flow (ttm)": '//*[@id="Col1-0-KeyStatistics-Proxy"]/section/div[2]/div[3]/div/div[6]/div/div/table/tbody/tr[2]/td[2]',
+    "Shares outstanding": '//*[@id="Col1-0-KeyStatistics-Proxy"]/section/div[2]/div[2]/div/div[2]/div/div/table/tbody/tr[3]/td[2]'
 	}
 ,
 "financials" : {
@@ -65,9 +65,11 @@ options.add_extension('./extension_ublock.crx')
 # Create webdriver
 driver = webdriver.Chrome(options=options)
 
-ans = [[], []]
+# Deal with cookies
 consentButton = '//*[@id="consent-page"]/div/div/div/form/div[2]/div[2]/button[1]'
 consent = False;
+
+results = []
 
 # Go over subpages
 for subpage in xpath_dict:
@@ -81,16 +83,15 @@ for subpage in xpath_dict:
 		driver.find_element(By.XPATH, consentButton).click()
 		consent = True;
 
-	ans.append([subpage, ""])
+	results.append([subpage.title(), ""])
 	# Fetch data
 	for item in xpath_dict[subpage]:
 		elem = driver.find_element(By.XPATH, xpath_dict[subpage][item])
 		print(item + ' ' + elem.text)
-		ans.append([item, elem.text])
-	    #ans[0].append(item)
-	    #ans[1].append(elem.text)
+		results.append([item, elem.text])
 
 # Store data to google sheets
-sheet.update('D39:E75', ans)
+print(results)
+sheet.update('A6:B35', results)
 
 driver.close()

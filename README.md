@@ -20,4 +20,4 @@ Follow the **Google Setup** in https://www.makeuseof.com/tag/read-write-google-s
 
 #### 4. Modify the script for your own needs
 
-Change names of worksheets, selenium driver, xpaths, etc.  
+Change names of worksheets, sheet cell numbers, selenium driver, xpaths, etc.  
