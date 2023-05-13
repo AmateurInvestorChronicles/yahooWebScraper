@@ -42,7 +42,9 @@ xpath_dict = {
     "Total debt" : '//*[@id="Col1-0-KeyStatistics-Proxy"]/section/div[2]/div[3]/div/div[5]/div/div/table/tbody/tr[3]/td[2]',
     "Operating cash flow (ttm)": '//*[@id="Col1-0-KeyStatistics-Proxy"]/section/div[2]/div[3]/div/div[6]/div/div/table/tbody/tr[1]/td[2]',
     "Free cash flow (ttm)": '//*[@id="Col1-0-KeyStatistics-Proxy"]/section/div[2]/div[3]/div/div[6]/div/div/table/tbody/tr[2]/td[2]',
-    "Shares outstanding": '//*[@id="Col1-0-KeyStatistics-Proxy"]/section/div[2]/div[2]/div/div[2]/div/div/table/tbody/tr[3]/td[2]'
+    "Shares outstanding": '//*[@id="Col1-0-KeyStatistics-Proxy"]/section/div[2]/div[2]/div/div[2]/div/div/table/tbody/tr[3]/td[2]',
+	"Forward annual dividend rate": '//*[@id="Col1-0-KeyStatistics-Proxy"]/section/div[2]/div[2]/div/div[3]/div/div/table/tbody/tr[1]/td[2]',
+	"Forward annual dividend yield": '//*[@id="Col1-0-KeyStatistics-Proxy"]/section/div[2]/div[2]/div/div[3]/div/div/table/tbody/tr[2]/td[2]'
 	}
 ,
 "financials" : {
@@ -50,6 +52,13 @@ xpath_dict = {
 	"Tax provision": '//*[@id="Col1-1-Financials-Proxy"]/section/div[3]/div[1]/div/div[2]/div[9]/div[1]/div[2]/span',
 	"Net income": '//*[@id="Col1-1-Financials-Proxy"]/section/div[3]/div[1]/div/div[2]/div[18]/div[1]/div[2]/span',
 	"Interest expense (ttm)" : '//*[@id="Col1-1-Financials-Proxy"]/section/div[3]/div[1]/div/div[2]/div[21]/div[1]/div[2]/span',
+	}
+,
+"cash-flow" : {
+	"Cash dividends (yr-1)": '//*[@id="Col1-1-Financials-Proxy"]/section/div[3]/div[1]/div/div[2]/div[3]/div[2]/div/div[2]/div[3]/div[1]/div[3]/span',
+	"Cash dividends (yr-2)": '//*[@id="Col1-1-Financials-Proxy"]/section/div[3]/div[1]/div/div[2]/div[3]/div[2]/div/div[2]/div[3]/div[1]/div[4]/span',
+	"Cash dividends (yr-3)": '//*[@id="Col1-1-Financials-Proxy"]/section/div[3]/div[1]/div/div[2]/div[3]/div[2]/div/div[2]/div[3]/div[1]/div[5]/span',
+	"Cash dividends (yr-4)": '//*[@id="Col1-1-Financials-Proxy"]/section/div[3]/div[1]/div/div[2]/div[3]/div[2]/div/div[2]/div[3]/div[1]/div[6]/span',
 	}
 ,
 "analysis" : {
@@ -85,6 +94,7 @@ driver = webdriver.Chrome(options=options)
 # Deal with cookies
 consentButton = '//*[@id="consent-page"]/div/div/div/form/div[2]/div[2]/button[1]'
 consent = False;
+expandAllButton = '//*[@id="Col1-1-Financials-Proxy"]/section/div[2]/button/div/span'
 
 results = []
 
@@ -100,6 +110,10 @@ for subpage in xpath_dict:
 		driver.find_element(By.XPATH, consentButton).click()
 		consent = True;
 
+	# Potentially expand cash-flow statement
+	if (subpage == 'cash-flow'):
+		driver.find_element(By.XPATH, expandAllButton).click()
+
 	results.append([subpage.title(), ""])
 	# Fetch data
 	for item in xpath_dict[subpage]:
@@ -109,7 +123,7 @@ for subpage in xpath_dict:
 
 # Store data to google sheets
 print(results)
-sheet.update('A6:B35', results)
+sheet.update('A6:B55', results)
 
 driver.close()
 
