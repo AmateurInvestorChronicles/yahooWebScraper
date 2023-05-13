@@ -57,6 +57,23 @@ xpath_dict = {
 	}
 }
 
+# Function to convert from yahoo finance format to float
+def convertToNumber(input):
+	if (input[-1] == 'T'):
+		return 1000000000000*float(input[:-1])
+	elif (input[-1] == 'B'):
+		return 1000000000*float(input[:-1])
+	elif (input[-1] == 'M'):
+		return 1000000*float(input[:-1])
+	elif (input[-1] == 'K'):
+		return 1000*float(input[:-1])
+	elif (input[-1] == '%'):
+		return 0.01*float(input[:-1])
+	elif (',' in input):
+		return 1000*float(input[:].replace(',', ''))
+	else:
+		return float(input)
+	
 
 # Add ublock extension to driver to not load ads => much faster
 options = webdriver.ChromeOptions();
@@ -88,10 +105,11 @@ for subpage in xpath_dict:
 	for item in xpath_dict[subpage]:
 		elem = driver.find_element(By.XPATH, xpath_dict[subpage][item])
 		print(item + ' ' + elem.text)
-		results.append([item, elem.text])
+		results.append([item, convertToNumber(elem.text)])
 
 # Store data to google sheets
 print(results)
 sheet.update('A6:B35', results)
 
 driver.close()
+
