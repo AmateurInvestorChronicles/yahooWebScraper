@@ -48,10 +48,10 @@ xpath_dict = {
 	}
 ,
 "financials" : {
-	"Pretax income": '//*[@id="Col1-1-Financials-Proxy"]/section/div[3]/div[1]/div/div[2]/div[8]/div[1]/div[2]/span',
-	"Tax provision": '//*[@id="Col1-1-Financials-Proxy"]/section/div[3]/div[1]/div/div[2]/div[9]/div[1]/div[2]/span',
+	"Pretax income": '//*[@id="Col1-1-Financials-Proxy"]/section/div[3]/div[1]/div/div[2]/div[7]/div[1]/div[2]/span',
+	"Tax provision": '//*[@id="Col1-1-Financials-Proxy"]/section/div[3]/div[1]/div/div[2]/div[8]/div[1]/div[2]/span',
 	"Net income": '//*[@id="Col1-1-Financials-Proxy"]/section/div[3]/div[1]/div/div[2]/div[18]/div[1]/div[2]/span',
-	"Interest expense (ttm)" : '//*[@id="Col1-1-Financials-Proxy"]/section/div[3]/div[1]/div/div[2]/div[21]/div[1]/div[2]/span',
+	"Interest expense (ttm)" : '//*[@id="Col1-1-Financials-Proxy"]/section/div[3]/div[1]/div/div[2]/div[20]/div[1]/div[2]/span',
 	}
 ,
 "cash-flow" : {
@@ -68,7 +68,9 @@ xpath_dict = {
 
 # Function to convert from yahoo finance format to float
 def convertToNumber(input):
-	if (input[-1] == 'T'):
+	if (input == 'N/A'):
+		return input;
+	elif (input[-1] == 'T'):
 		return 1000000000000*float(input[:-1])
 	elif (input[-1] == 'B'):
 		return 1000000000*float(input[:-1])
@@ -111,7 +113,7 @@ for subpage in xpath_dict:
 		consent = True;
 
 	# Potentially expand cash-flow statement
-	if (subpage == 'cash-flow'):
+	if (subpage == 'financials' or subpage == 'cash-flow'):
 		driver.find_element(By.XPATH, expandAllButton).click()
 
 	results.append([subpage.title(), ""])
