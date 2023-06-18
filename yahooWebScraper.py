@@ -38,8 +38,6 @@ def checkCorectness(key, xpath, driver):
     print("FOUND STRING:" + found_string)
     return found_string.startswith(key.split('_')[0])
 
-
-
 # Function to convert from yahoo finance format to float
 def convertToNumber(input):
     if input == "N/A":
@@ -59,7 +57,6 @@ def convertToNumber(input):
     else:
         return float(input)
 
-
 # Add ublock extension to driver to not load ads => much faster
 options = webdriver.ChromeOptions()
 options.add_argument("--start-maximized")
@@ -74,8 +71,6 @@ consent = False
 expandAllButton = '//*[@id="Col1-1-Financials-Proxy"]/section/div[2]/button/div/span'
 
 results = []
-
-
 currentSubpage = ""
 for yahooElement in elements:
     if (yahooElement.subpage != currentSubpage):

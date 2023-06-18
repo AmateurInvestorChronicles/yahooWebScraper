@@ -9,10 +9,10 @@ from selenium.common.exceptions import NoSuchElementException
 
 class yahooElement(object):
     def __init__(self, subpage, name, xpath, checkName="", checkXpath=""):
-        self.subpage = subpage
-        self.name = name
+        self.subpage = subpage # subpage/tab on the yahoo finance page
+        self.name = name # name of the value
         self.xpath = xpath
-        self.checkName = checkName
+        self.checkName = checkName # if this is initialized, the name of element at checkXpath will be compared to this string
         self.checkXpath = checkXpath
 
     def checkCorrectnes(self, driver):
@@ -25,6 +25,7 @@ class yahooElement(object):
         except NoSuchElementException:
             return False, "No such element."
 
+# list of elements we want to fetch
 elements = [
     yahooElement("summary", "Price",  '//*[@id="quote-header-info"]/div[3]/div[1]/div/fin-streamer[1]'),
     yahooElement("summary", "Market cap",  '//*[@id="quote-summary"]/div[2]/table/tbody/tr[1]/td[2]'),
