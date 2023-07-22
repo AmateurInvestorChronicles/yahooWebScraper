@@ -40,7 +40,7 @@ def checkCorectness(key, xpath, driver):
 
 # Function to convert from yahoo finance format to float
 def convertToNumber(input):
-    if input == "N/A":
+    if not any(char.isdigit() for char in input): # is string
         return input
     elif input[-1] == "T":
         return 1000000000000 * float(input[:-1])
@@ -64,28 +64,35 @@ options.add_extension("./extension_ublock.crx")
 
 # Create webdriver
 driver = webdriver.Chrome(options=options)
+driver.set_page_load_timeout(10)
 
 # Deal with cookies
 consentButton = '//*[@id="consent-page"]/div/div/div/form/div[2]/div[2]/button[1]'
 consent = False
 expandAllButton = '//*[@id="Col1-1-Financials-Proxy"]/section/div[2]/button/div/span'
+sectorField = '//*[@id="Col2-12-QuoteModule-Proxy"]/div/div/div/div/p[2]/span[2]'
 
 results = []
 currentSubpage = ""
 for yahooElement in elements:
     if (yahooElement.subpage != currentSubpage):
         currentSubpage = yahooElement.subpage
-        driver.get( "https://finance.yahoo.com/quote/" + ticker + "/" + yahooElement.subpage + "?p=" + ticker )
-        if not consent:
+        driver.get( "https://finance.yahoo.com/quote/" + ticker + "/" + yahooElement.subpage + "?p=" + ticker ) # get current subpage
+
+        if not consent: # accept cookies
             wait = WebDriverWait(driver, 1)
             wait.until(EC.element_to_be_clickable((By.XPATH, consentButton)))
             driver.find_element(By.XPATH, consentButton).click()
             consent = True
-        if yahooElement.subpage == "financials" or yahooElement.subpage == "balance-sheet" or yahooElement.subpage == "cash-flow":
+            driver.implicitly_wait(10) # the part with sectors and industry takes a while to load (for some reason wait.until did not work for me for those elements)
+        else:
+            driver.implicitly_wait(0) # reset not to wait if any elements are not loaded
+
+        if yahooElement.subpage == "financials" or yahooElement.subpage == "balance-sheet" or yahooElement.subpage == "cash-flow": 
             driver.find_element(By.XPATH, expandAllButton).click()
         results.append([yahooElement.subpage, ""])
 
-    if (yahooElement.checkXpath != ""):
+    if (yahooElement.checkXpath != ""): # if there is a manual check for this xpath first check
         checkResult = yahooElement.checkCorrectnes(driver);
         if (not checkResult[0]):
             results.append([yahooElement.name, checkResult[1]])
@@ -102,6 +109,6 @@ for yahooElement in elements:
 # Store data to google sheets
 for elem in results:
     print(elem)
-sheet.update("A6:B55", results)
+sheet.update("A6:B54", results)
 
 driver.close()

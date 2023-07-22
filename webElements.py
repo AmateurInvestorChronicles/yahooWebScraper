@@ -27,6 +27,9 @@ class yahooElement(object):
 
 # list of elements we want to fetch
 elements = [
+    yahooElement("summary", "Company name",  '//*[@id="quote-header-info"]/div[2]/div[1]/div[1]/h1'),
+    yahooElement("summary", "Sectors(s)",  '//*[@id="Col2-12-QuoteModule-Proxy"]/div/div/div/div/p[2]/span[2]'),
+    yahooElement("summary", "Industry",  '//*[@id="Col2-12-QuoteModule-Proxy"]/div/div/div/div/p[2]/span[4]'),
     yahooElement("summary", "Price",  '//*[@id="quote-header-info"]/div[3]/div[1]/div/fin-streamer[1]'),
     yahooElement("summary", "Market cap",  '//*[@id="quote-summary"]/div[2]/table/tbody/tr[1]/td[2]'),
     yahooElement("summary", "Beta",  '//*[@id="quote-summary"]/div[2]/table/tbody/tr[2]/td[2]'),
