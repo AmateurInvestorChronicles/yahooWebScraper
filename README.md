@@ -7,11 +7,12 @@ https://www.youtube.com/watch?v=VLKLrQPOs_4
 
 ### Instructions
 
-#### 1. Install selenium
+#### 1. Install python and selenium
 
-Folow the instructions in https://selenium-python.readthedocs.io/installation.html.
+Download python from https://www.python.org/downloads/ and install it.
+Folow the instructions in https://selenium-python.readthedocs.io/installation.html to install selenium.
 
-#### 2. Install gspread and oauth2client
+#### 2. Install gspread and oauth2client (optional, see below)
 
 `pip install gspread oauth2client`
 
@@ -26,3 +27,9 @@ Name the key file `client_secret.json` and put it in this folder.
 
 Change names of worksheets, sheet cell numbers, selenium driver, xpaths, etc.  
 
+### Running without connection to google sheets 
+
+For me, the most difficult part was configuring the service account
+for google sheets, but that is optional. If `gspread` or `oauth2client` is not installed,
+the script asks for yahoo ticker manually and still displays the results.
+So if you don't mind copy-pasting the content to google sheets yourself, this is the easy option.

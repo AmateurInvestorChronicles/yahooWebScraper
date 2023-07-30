@@ -6,27 +6,47 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.common.exceptions import NoSuchElementException
-import gspread
-from oauth2client.service_account import ServiceAccountCredentials
 from webElements import *
+import importlib
 
+#import gspread
+#from oauth2client.service_account import ServiceAccountCredentials
 
-# use creds to create a client to interact with the Google Sheets
-scope = [
-    "https://spreadsheets.google.com/feeds",
-    "https://www.googleapis.com/auth/drive",
-]
-creds = ServiceAccountCredentials.from_json_keyfile_name("client_secret.json", scope)
-client = gspread.authorize(creds)
+foundGoogleLib = True
+spec = importlib.util.find_spec('gspread')
+if spec is not None:
+    import gspread
+else:
+    print("Module gspread not found.")
+    foundGoogleLib = False;
 
-# Find a workbook by name and open the first sheet (client must have access to the sheets)
-sheet = client.open("Amateur Investor Chronicles").worksheet(
-    "Intrinsic value calculation"
-)
+spec = importlib.util.find_spec('oauth2client')
+if spec is not None:
+    from oauth2client.service_account import ServiceAccountCredentials
+else:
+    print("Module oauth2client not found.")
+    foundGoogleLib = False;
 
-# Extract ticker from a cell in google sheets and print its value
-ticker = sheet.acell("B2").value
-print("Found ticker symbol: " + ticker)
+if foundGoogleLib:
+    # use creds to create a client to interact with the Google Sheets
+    scope = [
+        "https://spreadsheets.google.com/feeds",
+        "https://www.googleapis.com/auth/drive",
+    ]
+    creds = ServiceAccountCredentials.from_json_keyfile_name("client_secret.json", scope)
+    client = gspread.authorize(creds)
+
+    # Find a workbook by name and open the first sheet (client must have access to the sheets)
+    sheet = client.open("Amateur Investor Chronicles").worksheet(
+        "Intrinsic value calculation"
+    )
+
+    # Extract ticker from a cell in google sheets and print its value
+    ticker = sheet.acell("B2").value
+    print("Found ticker symbol in sheets: " + ticker)
+else:
+    ticker = input("Write stock ticker as displayed on yahoo finance and press enter: ")
+
 
 # Function to check corectness of the xpath. Compares key with string obtained by scraping first column in the row of this xpath.
 def checkCorectness(key, xpath, driver):
@@ -64,7 +84,7 @@ options.add_extension("./extension_ublock.crx")
 
 # Create webdriver
 driver = webdriver.Chrome(options=options)
-driver.set_page_load_timeout(10)
+driver.set_page_load_timeout(3)
 
 # Deal with cookies
 consentButton = '//*[@id="consent-page"]/div/div/div/form/div[2]/div[2]/button[1]'
@@ -107,8 +127,14 @@ for yahooElement in elements:
     
 
 # Store data to google sheets
+
+if foundGoogleLib:
+    sheet.update("A6:B54", results)
+else:
+    print("Cannot write to google sheets. Results:")
+
 for elem in results:
-    print(elem)
-sheet.update("A6:B54", results)
+    print(elem[0] + "\t" + str(elem[1]))
+
 
 driver.close()
