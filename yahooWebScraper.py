@@ -104,7 +104,11 @@ for yahooElement in elements:
             wait.until(EC.element_to_be_clickable((By.XPATH, consentButton)))
             driver.find_element(By.XPATH, consentButton).click()
             consent = True
-            driver.implicitly_wait(10) # the part with sectors and industry takes a while to load (for some reason wait.until did not work for me for those elements)
+            driver.implicitly_wait(3) # the part with sectors and industry takes a while to load, sometimes it does even load and I don't know why
+            try:
+                wait.until(EC.visibility_of_element_located((By.XPATH, sectorField)))
+            except Exception:
+                pass
         else:
             driver.implicitly_wait(0) # reset not to wait if any elements are not loaded
 
