@@ -59,7 +59,7 @@ def checkCorectness(key, xpath, driver):
     return found_string.startswith(key.split('_')[0])
 
 # Function to convert from yahoo finance format to float
-def convertToNumber(input):
+def convertToNumber(input, thousands=True):
     if not any(char.isdigit() for char in input): # is string
         return input
     elif input[-1] == "T":
@@ -73,7 +73,7 @@ def convertToNumber(input):
     elif input[-1] == "%":
         return 0.01 * float(input[:-1])
     elif "," in input:
-        return 1000 * float(input[:].replace(",", ""))
+        return (1000 if thousands else 1) * float(input[:].replace(",", ""))
     else:
         return float(input)
 
@@ -87,6 +87,7 @@ driver = webdriver.Chrome(options=options)
 driver.set_page_load_timeout(3)
 
 # Deal with cookies
+scrollDownButton = '//*[@id="scroll-down-btn"]'
 consentButton = '//*[@id="consent-page"]/div/div/div/form/div[2]/div[2]/button[1]'
 consent = False
 expandAllButton = '//*[@id="Col1-1-Financials-Proxy"]/section/div[2]/button/div/span'
@@ -102,15 +103,13 @@ for yahooElement in elements:
         if not consent: # accept cookies
             wait = WebDriverWait(driver, 1)
             wait.until(EC.element_to_be_clickable((By.XPATH, consentButton)))
-            driver.find_element(By.XPATH, consentButton).click()
-            consent = True
-            driver.implicitly_wait(3) # the part with sectors and industry takes a while to load, sometimes it does even load and I don't know why
             try:
-                wait.until(EC.visibility_of_element_located((By.XPATH, sectorField)))
+                driver.find_element(By.XPATH, scrollDownButton).click()
             except Exception:
                 pass
-        else:
-            driver.implicitly_wait(0) # reset not to wait if any elements are not loaded
+            driver.find_element(By.XPATH, consentButton).click()
+            consent = True
+            #driver.implicitly_wait(3) 
 
         if yahooElement.subpage == "financials" or yahooElement.subpage == "balance-sheet" or yahooElement.subpage == "cash-flow": 
             driver.find_element(By.XPATH, expandAllButton).click()
@@ -124,7 +123,7 @@ for yahooElement in elements:
 
     try:
         elem = driver.find_element(By.XPATH, yahooElement.xpath)
-        results.append([yahooElement.name, convertToNumber(elem.text)])
+        results.append([yahooElement.name, convertToNumber(elem.text, yahooElement.subpage != "profile")])
     except NoSuchElementException:
         print(yahooElement.name + " " + "Not found (no check)")
         results.append([yahooElement.name, "Not found (no check)"])
@@ -133,7 +132,7 @@ for yahooElement in elements:
 # Store data to google sheets
 
 if foundGoogleLib:
-    sheet.update("A6:B54", results)
+    sheet.update("A6:B58", results)
 else:
     print("Cannot write to google sheets. Results:")
 
